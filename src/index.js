@@ -20,14 +20,13 @@ var mixpanel = Mixpanel.init('8eaa60e48fa8e49d3198f6dbab4f00d8'); // Token
 // TRACKING SIGNATURE ===  intentTrackingID.event("Event Category", "Event Action").send()
 
 var speechOutput;
-const welcomeOutput = "Hello, I'm going to ask you some questions to find out how kind you are. All you have to do, is say: yes. no. or, sometimes. Tell me to begin when you are ready to start. ";
+const welcomeOutput = "Hello, I'm going to ask you some questions to find out how kind you are. All you have to do, is say: yes. no. or, sometimes. <break time='.5s'/> Tell me to begin when you are ready to start. ";
 var reprompt = "Just tell me when you're ready, to begin. ";
 const DaysLeftIntro = [
-  "Okay. ",
   "Great. ",
   "Nice. ",
   "Alright. ",
-  "Excellent. "
+  "Cool. "
 ];
 
 var cardTitle = '';
@@ -95,11 +94,11 @@ const handlers = {
 
       // Q1 = When you're unsure about another person's motives, do you assume that his/her motives are good until you have evidence otherwise?
 
-      if(questionOne === "yes") {
+      if(questionOne === "yes" || questionOne === "yeah" || questionOne === "yup" || questionOne === "absolutely" || questionOne === "definitely") {
         result += 1;
-      } else if (questionOne === "no") {
+      } else if (questionOne === "no" || questionOne === "nope" || questionOne === "nah" || questionOne === "na" || questionOne === "never" || questionOne === "no way") {
         result -= 1;
-      } else if (questionOne === "sometimes") {
+      } else if (questionOne === "sometimes" || questionOne === "maybe" || questionOne === "i don't know" || questionOne === "perhaps" ) {
         result += 0;
       } else {
         result -= 10;
@@ -107,11 +106,11 @@ const handlers = {
 
       // Q2 = Do you consider yourself to have a high degree of self respect?
 
-      if(questionTwo === "yes") {
+      if(questionTwo === "yes" || questionTwo === "yeah" || questionTwo === "yup" || questionTwo === "absolutely" || questionTwo === "definitely") {
         result += 1;
-      } else if (questionTwo === "no") {
+      } else if (questionTwo === "no" || questionTwo === "nope" || questionTwo === "nah" || questionTwo === "na" || questionTwo === "never" || questionTwo === "no way") {
         result -= 1;
-      } else if (questionTwo === "sometimes") {
+      } else if (questionTwo === "sometimes" || questionTwo === "maybe" || questionTwo === "i don't know" || questionTwo === "perhaps" ) {
         result += 0;
       } else {
         result -= 10;
@@ -119,11 +118,11 @@ const handlers = {
 
       // Q3 = Are you always trying to be as honest as possible?
 
-      if(questionThree === "yes") {
+      if(questionThree === "yes" || questionThree === "yeah" || questionThree === "yup" || questionThree === "absolutely" || questionThree === "definitely") {
         result += 2;
-      } else if (questionThree === "no") {
+      } else if (questionThree === "no" || questionThree === "nope" || questionThree === "nah" || questionThree === "na" || questionThree === "never" || questionThree === "no way") {
         result -= 1;
-      } else if (questionThree === "sometimes") {
+      } else if (questionThree === "sometimes" || questionThree === "maybe" || questionThree === "i don't know" || questionThree === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
@@ -131,11 +130,11 @@ const handlers = {
 
       // Q4 = Do you help out a friend, even if your friend doesn't return the favor?
 
-      if(questionFour === "yes") {
+      if(questionFour === "yes" || questionFour === "yeah" || questionFour === "yup" || questionFour === "absolutely" || questionFour === "definitely") {
         result += 2;
-      } else if (questionFour === "no") {
+      } else if (questionFour === "no" || questionFour === "nope" || questionFour === "nah" || questionFour === "na" || questionFour === "never" || questionFour === "no way") {
         result -= 1;
-      } else if (questionFour === "sometimes") {
+      } else if (questionFour === "sometimes" || questionFour === "maybe" || questionFour === "i don't know" || questionFour === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
@@ -143,11 +142,11 @@ const handlers = {
 
       // Q5 = When people begin to gossip, do you make an effort to change the subject?
 
-      if(questionFive === "yes") {
+      if(questionFive === "yes" || questionFive === "yeah" || questionFive === "yup" || questionFive === "absolutely" || questionFive === "definitely") {
         result += 1;
-      } else if (questionFive === "no") {
+      } else if (questionFive === "no" || questionFive === "nope" || questionFive === "nah" || questionFive === "na" || questionFive === "never" || questionFive === "no way") {
         result += 0;
-      } else if (questionFive === "sometimes") {
+      } else if (questionFive === "sometimes" || questionFive === "maybe" || questionFive === "i don't know" || questionFive === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
@@ -155,11 +154,11 @@ const handlers = {
 
       // Q6 = Do you find it difficult to forgive those who have wronged you?
 
-      if(questionSix === "yes") {
+      if(questionSix === "yes" || questionSix === "yeah" || questionSix === "yup" || questionSix === "absolutely" || questionSix === "definitely") {
         result -= 1;
-      } else if (questionSix === "no") {
+      } else if (questionSix === "no" || questionSix === "nope" || questionSix === "nah" || questionSix === "na" || questionSix === "never" || questionSix === "no way") {
         result += 2;
-      } else if (questionSix === "sometimes") {
+      } else if (questionSix === "sometimes" || questionSix === "maybe" || questionSix === "i don't know" || questionSix === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
@@ -167,11 +166,11 @@ const handlers = {
 
       // Q7 = Do you listen patiently when someone says the same old story, or same old stale joke?
 
-      if(questionSeven === "yes") {
-        result += 2;
-      } else if (questionSeven === "no") {
+      if(questionSeven === "yes" || questionSeven === "yeah" || questionSeven === "yup" || questionSeven === "absolutely" || questionSeven === "definitely") {
+        result += 1;
+      } else if (questionSeven === "no" || questionSeven === "nope" || questionSeven === "nah" || questionSeven === "na" || questionSeven === "never" || questionSeven === "no way") {
         result -= 1;
-      } else if (questionSeven === "sometimes") {
+      } else if (questionSeven === "sometimes" || questionSeven === "maybe" || questionSeven === "i don't know" || questionSeven === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
@@ -179,35 +178,15 @@ const handlers = {
 
       // Q8 = Do you consider yourself to have control over your temper and emotions?
 
-      if(questionEight === "yes") {
+      if(questionEight === "yes" || questionEight === "yeah" || questionEight === "yup" || questionEight === "absolutely" || questionEight === "definitely") {
         result += 2;
-      } else if (questionEight === "no") {
+      } else if (questionEight === "no" || questionEight === "nope" || questionEight === "nah" || questionEight === "na" || questionEight === "never" || questionEight === "no way") {
         result -= 1;
-      } else if (questionEight === "sometimes") {
+      } else if (questionEight === "sometimes" || questionEight === "maybe" || questionEight === "i don't know" || questionEight === "perhaps" ) {
         result += 1;
       } else {
         result -= 10;
       }
-
-      // if(parseInt(questionNine) === "yes") {
-      //   result += 1;
-      // } else if (parseInt(questionNine) === "no") {
-      //   result -= 3;
-      // } else if (parseInt(questionNine) === "sometimes") {
-      //   result += 2;
-      // } else {
-      //   result -= 10;
-      // }
-      //
-      // if(parseInt(questionTen) === "yes") {
-      //   result += 1;
-      // } else if (parseInt(questionTen) === "no") {
-      //   result -= 3;
-      // } else if (parseInt(questionTen) === "sometimes") {
-      //   result += 2;
-      // } else {
-      //   result -= 10;
-      // }
 
       var realResult = result;
       var capitalName = capitalize(userName);
@@ -237,12 +216,20 @@ const handlers = {
         console.log("questionEight: " + questionEight);
       }
 
-      speechOutput += "<break time=\".6s\"/>Okay " + userName + ". Your guess, was, " + userGuess + ", out of ten.<break time=\".8s\"/> But really, your kindness, is about " + result + ", out of ten. "
+      speechOutput += "<break time=\".6s\"/>Okay " + userName + ". Your guess, was, " + userGuess + ", out of ten.<break time=\".8s\"/> And, according to my calculations, your kindness, is about " + result + ", out of ten. ";
+
+      if(parseInt(result) < parseInt(userGuess)) {
+        speechOutput += 'It seems as if you were wrong about your initial guess. <break time=".5s"/> Therefore, you may find this interesting. <break time=".5s"/> A study, carried out by psychologists from Goldsmiths University in London, found that people who thought they were nice, were generally more relaxed, happy, and successful. But, not necessarily more agreeable. <break time=".6s"/> Agreeableness is one of the “super traits” in the Big Five model of personality. People who score high on agreeableness are very trustworthy, altruistic, honest, modest, empathetic, and cooperative. <break time=".5s"/> ';
+      } else if (parseInt(result) > parseInt(userGuess)) {
+        speechOutput += "Hey " + userName + ". It seems like you're selling yourself a bit short! You're a lot nicer than you think you are. ";
+      } else if (parseInt(result) === parseInt(userGuess)) {
+        speechOutput += "Wowwowwow! Great guess, you were spot on. ";
+      }
 
       if(result > 7) {
         speechOutput += "You're really kind! You should be proud of that.";
       } else if(result < 5) {
-        speechOutput += "I think that you should work on being kind to others. Love is all we really have in this, extremely temporary life.";
+        speechOutput += "I think that you should work on being kind to others.<break time='.3s'/> Love is all we really have, in this extremely, temporary life. <break time='.6s'/> Have a wonderful day today " + userName + "! ";
       }
 
       //===================== CARD INFORMATION =======================
