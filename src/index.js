@@ -2,16 +2,22 @@
 const Alexa = require("alexa-sdk");
 const APP_ID = 'amzn1.ask.skill.a9cecf35-c604-4b8d-b84b-2eff9f42dc17'
 var AWS = require('aws-sdk');
-// var ua = require('universal-analytics');
-// var googleUA = 'UA-104151044-2'; //tracking ID
 
 AWS.config.update({
   region: "us-east-1"
 });
 
 var docClient = new AWS.DynamoDB.DocumentClient();
-// var totalTips = process.env.TOTAL_TIP_COUNT;
-// var tipsHeard = [];
+
+var ua = require('universal-analytics');
+var gUA = ua('UA-104151044-3'); // Tracking-ID
+
+var Mixpanel = require('mixpanel');
+var mixpanel = Mixpanel.init('8eaa60e48fa8e49d3198f6dbab4f00d8'); // Token
+
+
+// ID ====== 'UA-104151044-3'
+// TRACKING SIGNATURE ===  intentTrackingID.event("Event Category", "Event Action").send()
 
 var speechOutput;
 const welcomeOutput = "Hello, I'm going to ask you some questions to find out how kind you are. All you have to do, is say: yes. no. or, sometimes. Tell me to begin when you are ready to start. ";
@@ -21,9 +27,7 @@ const DaysLeftIntro = [
   "Great. ",
   "Nice. ",
   "Alright. ",
-  "Excellent. ",
-  "Thank you! ",
-  "Splendid! "
+  "Excellent. "
 ];
 
 var cardTitle = '';
@@ -35,51 +39,21 @@ var imageObj = {
 
 const handlers = {
   'LaunchRequest': function() {
+    // ANALYTICS
 
-    // Make sure this is a locally-scoped var within each intent function.
-    // var intentTrackingID = ua(googleUA, {https: true});
-    // Google Analytics
     // intentTrackingID.pageview("/").send();
+
+    // report a success
+    var utteranceValue = "SessionEndedRequest";
+    var utteranceData = ("intent: " + utteranceValue).toString();
+    gUA.event("user query","successful query", {query: utteranceData}).send();
+    mixpanel.track("Successful Launch", {query: utteranceData});
+
 
     if(process.env.debugFlag){
       console.log('Launching LaunchRequest...')
+      console.log("Starting TestIntent...")
     };
-    // if(this.attributes['daysLeft'] !== undefined) {
-    //   if(process.env.debugFlag){console.log('this.attributes["tipsHeard"] = ' + this.attributes["tipsHeard"])};
-    //   tipsHeard = this.attributes["tipsHeard"];
-    //   if (tipsHeard === undefined) {
-    //     tipsHeard = [];
-    //   }
-    //   readItem(this, tipsHeard, function(obj, data) {
-    //     if(process.env.debugFlag){console.log("data in readItem: " + data)};
-    //
-    //     tipsHeard.push(data['Id']);
-    //     obj.attributes['tipsHeard'] = tipsHeard;
-    //
-    //     var average_YearsLeft = numberWithCommas(obj.attributes['averageYearsLeft']);
-    //     var days_Left = numberWithCommas(obj.attributes['daysLeft']);
-    //     var hoursLeft = numberWithCommas(average_YearsLeft*8760);
-    //     var minutesLeft = numberWithCommas(average_YearsLeft*525600);
-    //     var secondsLeft = numberWithCommas(average_YearsLeft*31557600);
-    //
-    //     cardTitle = 'Welcome back!\n';
-    //     cardContent = 'Years left: ' + average_YearsLeft + '\nDays left: ' + days_Left + '\nHours left: ' + hoursLeft + '\nMinutes left: ' + minutesLeft + '\nSeconds left: ' + secondsLeft + '\n...\nHere is your tip: '+ data['tipSimple'] + '\n...\nIf you enjoyed this skill, please rate it 5 stars in the Alexa skill store!\n.\n All you need to do is: \n1. Go to the "Skills" section on your Alexa app\n 2. Tap "Your Skills" in the top right corner\n3. Find "My Years Left" \n4. Scroll to the bottom and tap "Write a Review"\n5. Show support! \n~\n Enjoy the present moment! :)';
-    //
-    //     obj.response.cardRenderer(cardTitle, cardContent, imageObj);
-    //     obj.response.speak("Welcome back, you have " + obj.attributes['daysLeft'] + " days left to live." +
-    //       " Here is a tip, to help you live a longer and healthier life. " + data['tip'] + '<break time="1s"/> I added this tip, and more information, on your Alexa skill.<break time=".6s"/>' + " Please don't be afraid to come back for more tips." +  '<break time=".6s"/>Thank you!');
-    //     obj.emit(':responseReady');
-    //
-    //     if(process.env.debugFlag){
-    //       console.log("Tips so far: " + tipsHeard)
-    //       console.log("TOTAL TIPS HEARD: " + tipsHeard.length)
-    //     };
-    //   });
-    // if (this.attributes['daysLeft'] == undefined) {
-    //   if(process.env.debugFlag){}
-    //
-    // };
-    console.log("Starting TestIntent...")
     this.response.speak(welcomeOutput).listen(reprompt);
     this.emit(':responseReady');
   },
@@ -117,14 +91,7 @@ const handlers = {
       // var questionTen=this.event.request.intent.slots.questionTen.value;
       // this.attributes['questionTen'] = questionTen;
 
-
       var result = 0;
-      // var today = new Date();
-      // var currentDate = today.getFullYear() + '-'
-      // + (today.getMonth()+1) + '-' + today.getDate();
-      // var age = parseInt(currentDate) - parseInt(dateOfBirth);
-      // var bodyMassIndex = (parseInt(weight)*703)/(parseInt(height)*parseInt(height));
-
 
       // Q1 = When you're unsure about another person's motives, do you assume that his/her motives are good until you have evidence otherwise?
 
@@ -222,36 +189,6 @@ const handlers = {
         result -= 10;
       }
 
-      // if(parseInt(questionSix) === "yes") {
-      //   result += 1;
-      // } else if (parseInt(questionSix) === "no") {
-      //   result -= 3;
-      // } else if (parseInt(questionSix) === "sometimes") {
-      //   result += 2;
-      // } else {
-      //   result -= 10;
-      // }
-      //
-      // if(parseInt(questionSeven) === "yes") {
-      //   result += 1;
-      // } else if (parseInt(questionSeven) === "no") {
-      //   result -= 3;
-      // } else if (parseInt(questionSeven) === "sometimes") {
-      //   result += 2;
-      // } else {
-      //   result -= 10;
-      // }
-      //
-      // if(parseInt(questionEight) === "yes") {
-      //   result += 1;
-      // } else if (parseInt(questionEight) === "no") {
-      //   result -= 3;
-      // } else if (parseInt(questionEight) === "sometimes") {
-      //   result += 2;
-      // } else {
-      //   result -= 10;
-      // }
-      //
       // if(parseInt(questionNine) === "yes") {
       //   result += 1;
       // } else if (parseInt(questionNine) === "no") {
@@ -272,23 +209,8 @@ const handlers = {
       //   result -= 10;
       // }
 
-
-      //////////////////////////////////////////////////////////
-      // var averageYearsLeft = numberWithCommas((yearsLeft) + (Math.round((87 - age))));
-      // var daysLeft = numberWithCommas(averageYearsLeft*365);
-      // var hoursLeft = numberWithCommas(averageYearsLeft*8760);
-      // var minutesLeft = numberWithCommas(averageYearsLeft*525600);
-      // var secondsLeft = numberWithCommas(averageYearsLeft*31557600);
-      // if(this.attributes['tipsHeard'] !== undefined) {
-      //   tipsHeard = this.attributes["tipsHeard"];
-      //   if (tipsHeard === undefined) {
-      //     tipsHeard = [];
-      //   }
-      // }
-      // result=this.event.request.intent.slots.result.value;
-      // this.attributes['result'] = result;
-
       var realResult = result;
+      var capitalName = capitalize(userName);
 
       this.attributes["realResult"] = realResult;
 
@@ -301,6 +223,7 @@ const handlers = {
       this.attributes["result"] = result;
       // this.attributes["userName"] = userName.toString();
 
+      if(process.env.debugFlag){
         console.log("realResult = " + realResult);
         console.log("result = " + result);
         console.log("userName = " + userName);
@@ -312,6 +235,7 @@ const handlers = {
         console.log("questionSix: " + questionSix);
         console.log("questionSeven: " + questionSeven);
         console.log("questionEight: " + questionEight);
+      }
 
       speechOutput += "<break time=\".6s\"/>Okay " + userName + ". Your guess, was, " + userGuess + ", out of ten.<break time=\".8s\"/> But really, your kindness, is about " + result + ", out of ten. "
 
@@ -321,11 +245,7 @@ const handlers = {
         speechOutput += "I think that you should work on being kind to others. Love is all we really have in this, extremely temporary life.";
       }
 
-      // speechOutput += "If you would like to hear a tip, simply start the skill again.<break time=\"1s\"/> I'm here to help you.<break time=\".3s\"/>I want you to use the rest of your days wisely, <break time=\".3s\"/> and I hope that you do.<break time=\"1s\"/> Thank you."
-
       //===================== CARD INFORMATION =======================
-
-      var capitalName = capitalize(userName);
 
       if(result >= 7) {
         cardTitle = "You're Extremely Kind " + capitalName + "!";
@@ -338,26 +258,11 @@ const handlers = {
       }
 
 
-      cardContent = "(I'm really sorry if I spelled your name wrong, Alexa isn't great with names yet.)\n...\nHow kind you thought you were: " + userGuess + '/10\nHow kind you really are: ' + result + '/10\n...'+ '\nIf you enjoyed this skill, please rate it 5 stars in the Alexa skill store!\n...\n All you need to do is: \n1. Go to the "Skills" section on your Alexa app\n 2. Tap "Your Skills" in the top right corner\n3. Find "How Kind Am I" \n4. Scroll to the bottom and tap "Write a Review"\n5. Show support!\n...\n That would really help out, Thank You!.\n~\n Enjoy the present moment! :)'; +
+      cardContent = "(I'm really sorry if I spelled your name wrong, Alexa isn't great with names yet)\n...\nHow kind you thought you were: " + userGuess + '/10\nHow kind you really are: ' + result + '/10\n...'+ '\nIf you enjoyed this skill, please rate it 5 stars in the Alexa skill store!\n...\n All you need to do is: \n1. Go to the "Skills" section on your Alexa app\n 2. Tap "Your Skills" in the top right corner\n3. Find "How Kind Am I" \n4. Scroll to the bottom and tap "Write a Review"\n5. Show support!\n...\n That would really help out, Thank You!.\n~\n Enjoy the present moment! :)'; +
       '\n...\n If you have the time please check out my other Alexa Skill, My Days Left, to calculate how many days you have left to live based on your habits.'
 
       this.emit(':tellWithCard', speechOutput, cardTitle, cardContent, imageObj);
 
-      // ================ DYNAMO READ FUNCTION ==========================
-          // I'LL USE THIS FOR userName TO SEE IF USER IS NEW OR NOT
-
-      // readItem(this, tipsHeard, function(obj, data) {
-      //   tipsHeard.push(data['Id']);
-      //   obj.attributes["tipsHeard"] = tipsHeard;
-      //   if(process.env.debugFlag){console.log("data['tip']: " + data['tip'])};
-      //
-      //   // obj.emit(":tell", "Okay." + data['tip'] + " <break time=\".6s\"/>If you would like to hear more tips," +
-      //   // "simply start the skill again.<break time=\"1s\"/> I'm here to help.<break time=\".3s\"/>I want you to use " +
-      //   // "the rest of your days wisely, <break time=\".3s\"/> and I hope that you do.<break time=\"1s\"/> Thank you.");
-      //   if(process.env.debugFlag){console.log("at the end of the second read item = " + tipsHeard)};
-      // });
-
-      if(process.env.debugFlag){console.log("tipsHeard after: " + tipsHeard)};
       this.response.speak(speechOutput);
       this.emit(":responseReady");
     },
@@ -367,11 +272,21 @@ const handlers = {
       this.emit(':responseReady');
     },
     "AMAZON.StopIntent": function() {
+      var utteranceValue = "StopIntent";
+      var utteranceData = ("intent: " + utteranceValue).toString();
+      gUA.event("exist","session ended").send();
+      mixpanel.track("Session Stopped", {query: utteranceData});
+
       speechOutput = "Stopped";
       this.response.speak(speechOutput);
       this.emit(':responseReady');
     },
     "AMAZON.CancelIntent": function() {
+      var utteranceValue = "CancelIntent";
+      var utteranceData = ("intent: " + utteranceValue).toString();
+      gUA.event("exist","session ended").send();
+      mixpanel.track("Session Cancelled", {query: utteranceData});
+
       speechOutput = "Cancelled";
       this.response.speak(speechOutput);
       this.emit(':responseReady');
@@ -380,6 +295,12 @@ const handlers = {
       console.log("UNHANDLED");
     },
     'SessionEndedRequest': function() {
+      // report a failure
+      var utteranceValue = "SessionEndedRequest";
+      var utteranceData = ("intent: " + utteranceValue).toString();
+      gUA.event("user query","failed query", utteranceData).send();
+      mixpanel.track("Failed Launch", {query: utteranceData});
+
       speechOutput = "Session Ended";
       this.response.speak(speechOutput);
       console.log('session ended!');
@@ -417,6 +338,12 @@ function delegateSlotCollection(){
         // return a Dialog.Delegate directive with no updatedIntent property.
         this.emit(":delegate");
       } else {
+        // ANALYTICS ~ reporting a successful test
+        var utteranceValue = "TestIntent";
+        var utteranceData = ("intent: " + utteranceValue).toString();
+        gUA.event("user query","successful query", {query: utteranceData}).send();
+        mixpanel.track("Successful Kind", {query: utteranceData});
+
         if(process.env.debugFlag){
           console.log("in completed")
           console.log("returning: "+ JSON.stringify(this.event.request.intent))
@@ -472,11 +399,6 @@ function getRandomTipWithExclusions(lengthOfArray = 0, arrayOfIndexesToExclude, 
 	}
   return rand;
 }
-
-function numberWithCommas(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
 
 function isSlotValid(request, slotName){
         var slot = request.intent.slots[slotName];
