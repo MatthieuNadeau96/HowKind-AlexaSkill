@@ -50,14 +50,13 @@ const handlers = {
 
 
     if(process.env.debugFlag){
-      console.log('Launching LaunchRequest...')
-      console.log("Starting TestIntent...")
+      console.log('INSIDE LaunchRequest...');
     };
     this.response.speak(welcomeOutput).listen(reprompt);
     this.emit(':responseReady');
   },
-  'TestIntent': function() {
-
+  'HowKind': function() {
+    console.log("INSIDE HowKind.......");
 
     var filledSlots = delegateSlotCollection.call(this);
     console.log("filled slots: " + JSON.stringify(filledSlots));
@@ -189,7 +188,12 @@ const handlers = {
       }
 
       var realResult = result;
-      var capitalName = capitalize(userName);
+      var capitalName = userName;
+      if (userName) {
+        capitalName = capitalize(userName);
+      } else {
+        capitalName = null;
+      }
 
       this.attributes["realResult"] = realResult;
 
