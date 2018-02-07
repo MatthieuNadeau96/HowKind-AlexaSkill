@@ -100,7 +100,7 @@ const handlers = {
       } else if (questionOne === "sometimes" || questionOne === "maybe" || questionOne === "i don't know" || questionOne === "perhaps" ) {
         result += 0;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q2 = Do you consider yourself to have a high degree of self respect?
@@ -112,7 +112,7 @@ const handlers = {
       } else if (questionTwo === "sometimes" || questionTwo === "maybe" || questionTwo === "i don't know" || questionTwo === "perhaps" ) {
         result += 0;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q3 = Are you always trying to be as honest as possible?
@@ -124,7 +124,7 @@ const handlers = {
       } else if (questionThree === "sometimes" || questionThree === "maybe" || questionThree === "i don't know" || questionThree === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q4 = Do you help out a friend, even if your friend doesn't return the favor?
@@ -136,7 +136,7 @@ const handlers = {
       } else if (questionFour === "sometimes" || questionFour === "maybe" || questionFour === "i don't know" || questionFour === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q5 = When people begin to gossip, do you make an effort to change the subject?
@@ -148,7 +148,7 @@ const handlers = {
       } else if (questionFive === "sometimes" || questionFive === "maybe" || questionFive === "i don't know" || questionFive === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q6 = Do you find it difficult to forgive those who have wronged you?
@@ -160,7 +160,7 @@ const handlers = {
       } else if (questionSix === "sometimes" || questionSix === "maybe" || questionSix === "i don't know" || questionSix === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q7 = Do you listen patiently when someone says the same old story, or same old stale joke?
@@ -172,7 +172,7 @@ const handlers = {
       } else if (questionSeven === "sometimes" || questionSeven === "maybe" || questionSeven === "i don't know" || questionSeven === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       // Q8 = Do you consider yourself to have control over your temper and emotions?
@@ -184,7 +184,7 @@ const handlers = {
       } else if (questionEight === "sometimes" || questionEight === "maybe" || questionEight === "i don't know" || questionEight === "perhaps" ) {
         result += 1;
       } else {
-        result -= 10;
+        result -= 0;
       }
 
       var realResult = result;
@@ -223,18 +223,24 @@ const handlers = {
       speechOutput += "<break time=\".6s\"/>Okay " + userName + ". Your guess, was, " + userGuess + ", out of ten.<break time=\".8s\"/> And, according to my calculations, your kindness, is about " + result + ", out of ten. ";
 
       if(parseInt(result) < parseInt(userGuess)) {
-        speechOutput += 'It seems as if you were wrong about your initial guess. <break time=".5s"/> Therefore, you may find this interesting. <break time=".5s"/> A study, carried out by psychologists from Goldsmiths University in London, found that people who thought they were nice, were generally more relaxed, happy, and successful. But, not necessarily more agreeable. <break time=".6s"/> Agreeableness is one of the “super traits” in the Big Five model of personality. People who score high on agreeableness are very trustworthy, altruistic, honest, modest, empathetic, and cooperative. <break time=".5s"/> ';
+
+        // I want to output this if userGuess is 5 points less than result.
+        // Therefore, you may find this interesting. <break time=".5s"/> A study, carried out by psychologists from Goldsmiths University in London, found that people who thought they were nice, were generally more relaxed, happy, and successful. But, not necessarily more agreeable. <break time=".6s"/> Agreeableness is one of the “super traits” in the Big Five model of personality. People who score high on agreeableness are very trustworthy, altruistic, honest, modest, empathetic, and cooperative.
+
+        speechOutput += "It seems as if you were wrong about your initial guess. <break time='.5s'/> I sent some information to your Alexa skill, do take the time to check that out. <break time='.6s'/>And if you enjoyed this skill, please take the time to rate it five stars, in the Alexa skill store. That would help out tremendously. Thank you. ";
       } else if (parseInt(result) > parseInt(userGuess)) {
-        speechOutput += "Hey " + userName + ". It seems like you're selling yourself a bit short! You're a lot nicer than you think you are. ";
+        speechOutput += "Hey " + userName + ". It seems like you're selling yourself a bit short! You're a lot nicer than you think you are.<break time='.6s'/> I sent some information to your Alexa skill, do take the time to check that out. <break time='.6s'/>And if you enjoyed this skill, please take the time to rate it five stars, in the Alexa skill store. That would help out tremendously. Thank you. ";
       } else if (parseInt(result) === parseInt(userGuess)) {
-        speechOutput += "Wowwowwow! Great guess, you were spot on. ";
+        speechOutput += "Wow! Great guess, you were spot on. <break time='.6s'/> I sent some information to your Alexa skill, do take the time to check that out. <break time='.6s'/>And if you enjoyed this skill, please take the time to rate it five stars, in the Alexa skill store. That would help out tremendously. Thank you.<break time='.4s'/> ";
       }
 
       if(result > 7) {
-        speechOutput += "You're really kind! You should be proud of that.";
+        speechOutput += "You're really kind! You should be proud of that. <break time='.4s'/> ";
       } else if(result < 5) {
-        speechOutput += "I think that you should work on being kind to others.<break time='.3s'/> Love is all we really have, in this extremely, temporary life. <break time='.6s'/> Have a wonderful day today " + userName + "! ";
+        speechOutput += "I think that you should work on being kind to others.<break time='.3s'/> Love is all we really have, in this extremely, temporary life. <break time='.4s'/> "
       }
+
+      speechOutput += " Have a wonderful day today " + userName + "! ";
 
       //===================== CARD INFORMATION =======================
 
@@ -258,7 +264,11 @@ const handlers = {
       this.emit(":responseReady");
     },
     "AMAZON.HelpIntent": function() {
-      speechOutput = "I'm going to ask you some questions, to be able to estimate how long you have to live. So just tell me when you're ready, to begin. ";
+      var utteranceValue = "HelpIntent";
+      var utteranceData = ("intent: " + utteranceValue).toString();
+      gUA.event("exist","Help intent").send();
+      mixpanel.track("Help Intent", {query: utteranceData});
+      speechOutput = "All that you have to do, is say that you are ready. And then I will begin to ask you questions to test your kindness. <break time='.5s'/> So, just tell me when you're ready to begin. ";
       this.response.speak(speechOutput).listen(reprompt);
       this.emit(':responseReady');
     },
